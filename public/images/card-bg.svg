@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none">
+  <defs>
+    <linearGradient id="navyCardGrad" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0A2540" />
+      <stop offset="60%" stop-color="#13325A" />
+      <stop offset="100%" stop-color="#1E3A8A" />
+    </linearGradient>
+    <linearGradient id="emeraldArc" x1="420" y1="0" x2="640" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#059669" stop-opacity="0.34" />
+      <stop offset="100%" stop-color="#059669" stop-opacity="0.02" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="url(#navyCardGrad)" />
+  <circle cx="560" cy="70" r="210" fill="url(#emeraldArc)" />
+  <path d="M-40 340L150 220L320 310L530 175L690 260V430H-40V340Z" fill="#071B30" fill-opacity="0.45" />
+  <g stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1.2">
+    <polygon points="90,45 140,74 140,132 90,161 40,132 40,74" />
+    <polygon points="190,103 240,132 240,190 190,219 140,190 140,132" />
+    <polygon points="520,235 570,264 570,322 520,351 470,322 470,264" />
+  </g>
+</svg>

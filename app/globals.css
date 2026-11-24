@@ -1,0 +1,68 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@font-face {
+  font-family: 'Shabnam';
+  src: url('/fonts/Shabnam-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Shabnam';
+  src: url('/fonts/Shabnam-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Shabnam';
+  src: url('/fonts/Shabnam-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: 'Shabnam', Tahoma, sans-serif;
+  --color-navy-900: #0A2540;
+  --color-navy-800: #1E3A8A;
+  --color-emerald-600: #059669;
+  --color-amber-600: #D97706;
+  --color-crimson-600: #DC2626;
+}
+
+html,
+body,
+input,
+button,
+select,
+textarea {
+  font-family: 'Shabnam', Tahoma, sans-serif;
+}
+
+html {
+  direction: rtl;
+  background-color: #F1F5F9;
+  color: #0F172A;
+}
+
+body {
+  background-color: #F1F5F9;
+  color: #0F172A;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0;
+  overflow-x: hidden;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.dir-ltr {
+  direction: ltr;
+  unicode-bidi: isolate;
+}

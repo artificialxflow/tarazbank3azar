@@ -1,0 +1,6 @@
+{
+  "name": "ترازبانک (TarazBank)",
+  "description": "پلتفرم جامع فینتک، بانکداری باز (BaaS)، انتقال وجه چندبستری و اتاق معامله امن با پنل مغایرت‌گیری",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

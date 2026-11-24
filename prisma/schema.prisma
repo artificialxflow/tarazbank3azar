@@ -1,0 +1,235 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  OPS_ADMIN
+}
+
+enum KycTier {
+  TIER_1
+  TIER_2
+  TIER_3
+}
+
+enum KycStatus {
+  PENDING
+  IN_REVIEW
+  VERIFIED
+  REJECTED
+}
+
+enum AccountType {
+  CURRENT_GHARZOLHASANEH
+  SHORT_TERM_DEPOSIT
+  TARAZ_SPECIAL_DEPOSIT
+}
+
+enum AccountStatus {
+  ACTIVE
+  FROZEN
+  CLOSED
+}
+
+enum CardType {
+  PHYSICAL
+  VIRTUAL
+}
+
+enum CardStatus {
+  ACTIVE
+  FROZEN
+  BLOCKED
+  ISSUING
+}
+
+enum RailType {
+  SATNA
+  PAYA
+  POL
+  CARD_TO_CARD
+  INTERNAL
+  ESCROW
+  SWAP
+}
+
+enum TransactionStatus {
+  SUCCESS
+  FAILED
+  PENDING_INQUIRY
+  REVERSED
+}
+
+enum ReconciliationStatus {
+  MATCHED
+  NEEDS_INQUIRY
+  RESOLVED_SETTLED
+  RESOLVED_REVERSED
+}
+
+enum SafeDealStatus {
+  DRAFT
+  FUNDED
+  OBLIGATION_SUBMITTED
+  RELEASED
+  DISPUTED
+  CANCELLED
+}
+
+enum MeetingStatus {
+  SCHEDULED
+  LIVE
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id                  String              @id @default(cuid())
+  fullName            String
+  mobile              String              @unique
+  email               String?             @unique
+  nationalCode        String              @unique
+  role                UserRole            @default(CUSTOMER)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  kycProfile          KycProfile?
+  bankAccounts        BankAccount[]
+  bankCards           BankCard[]
+  ledgerTransactions  LedgerTransaction[]
+  buyerContracts      SafeDealContract[]  @relation("BuyerContracts")
+  walletAssets        WalletAsset[]
+  meetingSessions     MeetingSession[]
+}
+
+model KycProfile {
+  id                  String    @id @default(cuid())
+  userId              String    @unique
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tier                KycTier   @default(TIER_1)
+  status              KycStatus @default(PENDING)
+  shahkarVerified     Boolean   @default(false)
+  livenessVerified    Boolean   @default(false)
+  postalCode          String?
+  postalVerified      Boolean   @default(false)
+  dailyTransferLimit  BigInt    @default(500000000)
+  escrowLimit         BigInt    @default(1000000000)
+  verifiedAt          DateTime?
+  updatedAt           DateTime  @updatedAt
+}
+
+model BankAccount {
+  id                  String              @id @default(cuid())
+  userId              String
+  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title               String
+  accountType         AccountType
+  accountNumber       String              @unique
+  iban                String              @unique
+  availableBalanceIrr BigInt              @default(0)
+  blockedBalanceIrr   BigInt              @default(0)
+  status              AccountStatus       @default(ACTIVE)
+  baasAccountRef      String?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  cards               BankCard[]
+  transactions        LedgerTransaction[]
+}
+
+model BankCard {
+  id                String      @id @default(cuid())
+  userId            String
+  user              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bankAccountId     String
+  bankAccount       BankAccount @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  maskedPan         String
+  cardType          CardType    @default(PHYSICAL)
+  status            CardStatus  @default(ACTIVE)
+  expiryMonth       Int
+  expiryYear        Int
+  onlineEnabled     Boolean     @default(true)
+  dailyLimitIrr     BigInt      @default(100000000)
+  baasCardToken     String?
+  issuedAt          DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+model LedgerTransaction {
+  id                   String               @id @default(cuid())
+  userId               String
+  user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bankAccountId        String?
+  bankAccount          BankAccount?         @relation(fields: [bankAccountId], references: [id], onDelete: SetNull)
+  idempotencyKey       String               @unique
+  railType             RailType
+  direction            String               @default("DEBIT")
+  amountIrr            BigInt
+  feeIrr               BigInt               @default(0)
+  counterpartyName     String
+  destinationRef       String
+  description          String?
+  status               TransactionStatus    @default(PENDING_INQUIRY)
+  reconciliationStatus ReconciliationStatus @default(MATCHED)
+  bankReferenceCode    String?
+  inquiryAttempts      Int                  @default(0)
+  lastInquiryNote      String?
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+
+  @@index([status, reconciliationStatus])
+  @@index([userId, createdAt])
+}
+
+model SafeDealContract {
+  id                  String         @id @default(cuid())
+  contractCode        String         @unique
+  buyerId             String
+  buyer               User           @relation("BuyerContracts", fields: [buyerId], references: [id], onDelete: Cascade)
+  sellerName          String
+  sellerNationalCode  String
+  sellerIban          String
+  title               String
+  category            String
+  totalAmountIrr      BigInt
+  releasedAmountIrr   BigInt         @default(0)
+  status              SafeDealStatus @default(DRAFT)
+  milestonesJson      Json
+  disputeReason       String?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+}
+
+model WalletAsset {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  symbol           String
+  nameFa           String
+  balance          Decimal  @db.Decimal(24, 8)
+  lockedBalance    Decimal  @default(0) @db.Decimal(24, 8)
+  updatedAt        DateTime @updatedAt
+
+  @@unique([userId, symbol])
+}
+
+model MeetingSession {
+  id                String        @id @default(cuid())
+  userId            String
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  advisorName       String
+  advisorTitle      String
+  topic             String
+  relatedContractId String?
+  scheduledAt       DateTime
+  durationMinutes   Int           @default(30)
+  status            MeetingStatus @default(SCHEDULED)
+  roomCode          String        @unique
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+}

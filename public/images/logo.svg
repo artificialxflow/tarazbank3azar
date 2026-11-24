@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" role="img" aria-label="ترازبانک">
+  <path
+    d="M24 3.5L40.5 13V30.2C40.5 36.1 33.4 41.3 24 44.5C14.6 41.3 7.5 36.1 7.5 30.2V13L24 3.5Z"
+    stroke="#0A2540"
+    stroke-width="3.2"
+    stroke-linejoin="round"
+    fill="#FFFFFF"
+  />
+  <path
+    d="M24 3.5L40.5 13V17.5"
+    stroke="#059669"
+    stroke-width="3.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M15.5 21.5H31.5L26.8 16.8"
+    stroke="#059669"
+    stroke-width="2.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M32.5 27.5H16.5L21.2 32.2"
+    stroke="#0A2540"
+    stroke-width="2.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
